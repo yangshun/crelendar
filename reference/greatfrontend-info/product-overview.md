@@ -92,11 +92,13 @@ Accessibility, Async, CSS, Closures, HTML, Internationalization, JavaScript, Net
 
 ## GFE Tie-In Opportunities (for content briefs)
 
-| Post Topic | Natural GFE Connection |
-|---|---|
-| React hooks, closures, JS concepts | "Practice this concept" → GFE coding questions |
-| System design, architecture | "Learn the RADIO framework" → GFE system design |
-| Interview prep, career advice | "500+ practice questions" → GFE study plans |
-| Framework comparisons | "Practice in any framework" → multi-framework support |
-| FAANG interview tips | "Company-specific guides" → GFE company guides |
-| Front-end roadmaps | "Structured study plans" → GFE 75, study paths |
+| Post Topic | Natural GFE Connection | Product | Messaging |
+|---|---|---|---|
+| React hooks, closures, JS concepts | "Practice this concept" → GFE coding questions | Interview Prep | practice, prepare, ace |
+| System design, architecture | "Practice the RADIO framework" → GFE system design | Interview Prep | practice, prepare, ace |
+| Interview prep, career advice | "500+ practice questions" → GFE study plans | Interview Prep | practice, prepare, ace |
+| Framework comparisons | "Practice in any framework" → multi-framework support | Interview Prep | practice, prepare, ace |
+| FAANG interview tips | "Company-specific guides" → GFE company guides | Interview Prep | practice, prepare, ace |
+| Front-end roadmaps | "Structured study plans" → GFE 75, study paths | Interview Prep | practice, prepare, study |
+| Portfolio projects, skill building | "Build real-world projects" → GFE Projects (80% free) | Projects | build, showcase, portfolio |
+| Performance, optimization | "Tips for blazing fast websites" → GFE blog | Blog | practical tips, real-world |

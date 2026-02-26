@@ -27,7 +27,17 @@ Gather accurate, current, comprehensive information on the topic. This is the mo
 
 **Step 0: ClickUp Task Intake** (skip if topic was given manually)
 
-0a. **Find the next "write brief" subtask** from the ClickUp "2026 Calender" list (ID: `901814889385`). Use `clickup_search` to find subtasks with status "write brief". For each candidate subtask, fetch its **parent task** using `clickup_get_task` — the parent task's due date is the **post publish date**, which determines priority. **Always pick the subtask whose parent has the earliest publish date.** Skip any tasks whose parent publish date has already passed (overdue posts are handled separately by the marketing team). ClickUp due dates are epoch milliseconds — convert to human dates for comparison (e.g., `1772404200000` ÷ 1000 → Unix timestamp → date).
+0a. **Find the next "write brief" subtask** from the ClickUp "2026 Calender" list (ID: `901814889385`). Use `clickup_search` to find subtasks with status "write brief". For each candidate subtask, fetch its **parent task** using `clickup_get_task` — the parent task's due date is the **post publish date**, which determines priority.
+
+   **CRITICAL: Sort ALL candidates by parent task due date (publish date), NOT by subtask due date (brief deadline).** The subtask due date is the brief-writing deadline — it does NOT determine execution order. The parent due date is the actual post publish date and is the ONLY valid sort key for priority.
+
+   To determine correct order:
+   1. Fetch ALL open "write brief" subtasks (not just the first few results)
+   2. For each, retrieve the parent task's due date
+   3. Sort by parent due date ascending (earliest publish date first)
+   4. Pick the subtask with the earliest parent due date
+
+   Skip any tasks whose parent publish date has already passed (overdue posts are handled separately by the marketing team). ClickUp due dates are epoch milliseconds — convert to human dates for comparison (e.g., `1772404200000` ÷ 1000 → Unix timestamp → date).
 
 0b. **Get the parent task** (the topic). Read the parent task's name, description, and custom fields using `clickup_get_task` with the parent task ID.
 
@@ -46,6 +56,8 @@ Gather accurate, current, comprehensive information on the topic. This is the mo
 
 1. **Check prior art.** Search `top-linkedin-posts/` and `briefs/approved/` for any previous posts on the same or adjacent topics. Note what angles were covered and how they performed.
 
+1b. **Dedup check for recurring series.** If this is a Biweekly News or Ship with AI brief, check `reference/covered-topics.md` before researching. Exclude any topic already listed. Also read the relevant pillar-specific format guide at `reference/content-pillars/` (`news-roundup.md` for Biweekly News, `ai-coding-tips.md` for Ship with AI). After completing the brief, append all covered topics to the tracker.
+
 2. **Primary research.** Gather facts from authoritative sources:
    - Official documentation and release notes
    - Official tech blogs (company engineering blogs for breakdowns)
@@ -54,7 +66,14 @@ Gather accurate, current, comprehensive information on the topic. This is the mo
    - Reputable tech publications (not random Medium posts)
    - Conference talks and official announcements
 
-3. **Mine for insights.** Separate what's common knowledge from what's genuinely new or surprising. For each major fact or claim, ask:
+3. **Content landscape & social research.** Assess what already exists on this topic and where the audience conversation is:
+   - **Competitor content:** Search LinkedIn, YouTube, and tech blogs for existing posts on the same topic. Note which angles have been covered, what formats were used, and what engagement they received. Identify saturated angles to avoid and gaps to exploit.
+   - **Social sentiment:** Check Reddit (r/webdev, r/reactjs, r/javascript), Twitter/X, and Hacker News for recent discussions on the topic. What are developers actually saying? What frustrations, debates, or misconceptions are active?
+   - **Content gaps:** Based on competitor content and social discussions, identify angles or sub-topics that are underserved. The best-performing posts fill a gap — they say what nobody else has said yet, or say it better.
+   - **Audience questions:** Collect the actual questions developers are asking about this topic on Stack Overflow, Reddit, and forums. These can feed directly into hooks and engagement prompts.
+   Save landscape findings in the research notes alongside primary research.
+
+4. **Mine for insights.** Separate what's common knowledge from what's genuinely new or surprising. For each major fact or claim, ask:
    - **Would a mid-level engineer already know this?** If yes, it's context — not the headline.
    - **What's the non-obvious layer?** Every topic has a surface understanding and a deeper truth. Dig for the deeper truth. Examples:
      - Surface: "React uses a virtual DOM" → Insight: "React 19's compiler eliminates the need for useMemo/useCallback in most cases"
@@ -63,7 +82,7 @@ Gather accurate, current, comprehensive information on the topic. This is the mo
    - **Is there authoritative data that contradicts popular belief?** Myth-busting backed by official sources is the highest-engagement content pattern.
    - **Can I cite a specific source that gives this credibility?** Insights from official engineering blogs, core team members, or verified benchmarks carry more weight than generic best practices.
 
-4. **Compile research notes.** Save to `reference/topic-research/YYYY-MM-DD-topic-slug.md` with:
+5. **Compile research notes.** Save to `reference/topic-research/YYYY-MM-DD-topic-slug.md` with:
    - Key facts and data points
    - Source URLs for every claim
    - **Insight map:** What the audience likely already knows (common understanding) vs. what would be new/surprising (the insight). This map directly feeds Stage 2 angle selection and Stage 3 content.
@@ -78,6 +97,7 @@ A research document with sourced facts and a clear insight map, ready for the ne
 - ❏ No claim exists without a source URL
 - ❏ Prior art checked — not duplicating a recent post
 - ❏ Insight map present — at least 2-3 facts/angles identified that go beyond common understanding
+- ❏ Content landscape checked — competitor posts, social sentiment, and content gaps identified
 
 ---
 
@@ -206,7 +226,7 @@ Every content section/slide must include at least ONE of:
 2. **Write slides 2 through N-1.** One idea per slide. Headline + 2-3 supporting points. 30-50 words max. Include visual direction for each.
 3. **Each content slide needs a concrete anchor.** A code snippet, a named example, a number, or a contrast. If a slide is pure text bullets with no concrete anchor, rewrite it or merge it with another slide.
 4. **Write the closer slide.** Summary/cheatsheet (high saves), strong takeaway (high comments), or CTA + GFE mention.
-5. **Target 7-10 slides total.** Under 7 feels thin. Over 10, swipe fatigue sets in.
+5. **Target 7-10 slides total.** Under 7 feels thin. Over 10, swipe fatigue sets in. Going above 10 is acceptable when slides were split for density reasons (concept + code pairs), but **never exceed 20 slides** — that's the platform cap for both LinkedIn and Instagram carousels. If a brief needs more than 20 slides, the scope is too broad — split into a series.
 6. **Maintain swipe motivation.** Each slide should create a reason to see the next one.
 
 #### For Single Images:
@@ -231,6 +251,23 @@ Every content section/slide must include at least ONE of:
 2. **Include formatting notes.** Line breaks, emoji usage, structural choices that affect readability.
 3. **Prioritize speed for news.** Text-only is the fast format — don't over-produce when timeliness matters.
 
+#### Content Density Rule (all visual formats):
+Every slide, zone, or frame must be scannable at a glance. If it takes more than 3 seconds to read, it's too dense. Overcrowded slides hurt engagement (people swipe past what looks effortful) and create production issues (cramped layouts, tiny fonts that don't render on mobile).
+
+**Red flags for overcrowding:**
+- More than 3 bullet points on a single slide
+- A code block (4+ lines) alongside bullet points
+- A code block AND a BAD/GOOD contrast pair on the same slide
+- Any single-image content zone with more than ~40 words of body text
+
+**When a slide is too dense, fix for engagement first — don't default to splitting.** Evaluate these options in order of preference:
+1. **Cut.** Is everything on this slide essential? Remove the weakest element. A slide with 3 strong points beats one with 5 that includes filler.
+2. **Shorten.** Can bullet points become single-line fragments? Can a 7-line code block become 4 lines by trimming boilerplate? Can the BAD/GOOD contrast be compressed into one line each?
+3. **Restructure.** Would a different visual format (table, diagram, comparison grid) present the same info more compactly than bullet points + code?
+4. **Split.** If cutting, shortening, and restructuring still leave too much — then split into two slides. But this adds to slide count and can break reading flow, so it's the last resort, not the first.
+
+**The designer test:** Before finalizing, ask "could the designer lay this out at a readable font size with breathing room?" If the answer is "only if we shrink everything" — go back through options 1-4 above.
+
 **For all formats:**
 
 4. **Write the caption.** (For text-only posts, this becomes the engagement prompt instead.)
@@ -251,6 +288,23 @@ Every content section/slide must include at least ONE of:
 
 7. **Compile sources.** List every source URL used. For memes/culture posts with no factual claims, note "No factual claims — culture/humor post."
 
+8. **Write the planned first comment.** The first comment on LinkedIn gets the most visibility after the post itself. Do NOT waste it on a source list. The first comment must serve one of two goals:
+
+   > **Goal A: Engagement** — Add value that extends the post and invites discussion.
+   > **Goal B: Conversion** — Drive traffic to a specific GFE resource with a compelling reason to click.
+
+   **First comment structure:**
+   1. **Lead with a value-add sentence** — a bonus insight, a practical takeaway, a surprising stat, or a direct question that wasn't in the post. This is the hook of the comment. It must stand on its own as useful content.
+   2. **GFE CTA** (when relevant) — Link to the most specific GFE resource for the topic. Frame it as a solution to a problem the post surfaced, not as a generic plug. Use UTM parameters matching the campaign.
+   3. **Sources** (optional, brief) — If the post makes factual claims, add a one-line "Sources: [paper title](URL)" at the end. Keep it minimal — 1-2 key sources, not an exhaustive bibliography.
+
+   **What a good first comment looks like:**
+   - "The study also found that pilot participants kept sneaking AI use even when told not to — 25-35% non-compliance. If you can't stop using AI even in a controlled study, that says something about how embedded it already is. If you want to strengthen the fundamentals AI is eroding, here's a solid starting point: [specific GFE resource link]"
+   - "One thing that didn't fit in the carousel: Cloudflare's engineer found that AI sessions over 45 minutes produced progressively worse code. The sweet spot was 20-30 minutes with a fresh context window. Has anyone else noticed this in their own workflow?"
+
+   **What a bad first comment looks like:**
+   - "Sources and further reading: [URL 1], [URL 2], [URL 3], [URL 4]. GFE interview guidebook: [URL]" — this is a bibliography, not a comment. Nobody reads this. Nobody clicks through.
+
 ### Output
 A complete brief following the template in `agents.md`.
 
@@ -262,6 +316,7 @@ A complete brief following the template in `agents.md`.
 - ❏ Caption is written and includes hashtags + CTA
 - ❏ GFE tie-in is documented and feels organic (or explicitly skipped with reason)
 - ❏ Sources section is complete
+- ❏ Planned first comment leads with a value-add (not a source list) and serves engagement or conversion
 
 ---
 
@@ -293,6 +348,12 @@ Catch every factual error, tighten the writing, and pressure-test engagement pot
    - Outdated syntax or deprecated APIs presented as current
    - Overly confident claims that should be hedged
 
+4. **Check for source over-extrapolation.** For every architectural or "how X works" claim in the brief, trace it back to its source and ask:
+   - Does the source actually say what the brief claims? A blog post about "alpha blending with WebGL" does NOT mean "the entire editor bypasses the DOM and uses WebGL."
+   - Is the scope right? A source about one specific operation (image processing, caching, etc.) does not justify a claim about the entire system architecture.
+   - Is this a direct quote/paraphrase, or an inference? If it's an inference, is there a second source that confirms it? Single-source architectural claims are high risk.
+   If a claim can't be directly supported by its source at the same scope, either narrow the claim to match what the source actually says, find additional sources that support the broader claim, or drop it entirely.
+
 **Engagement pass:**
 
 4. **Re-read the hook** fresh. Does it still stop the scroll after you've been deep in the content? If not, rewrite it.
@@ -303,7 +364,9 @@ Catch every factual error, tighten the writing, and pressure-test engagement pot
 
 7. **Check for comment triggers.** Is there at least one moment in the carousel that will make someone think "wait, I disagree" or "yes, this is so true" or "I've experienced this"? If not, sharpen an opinion or add a relatable example.
 
-8. **Verify CTA numbers against live product.** Any product count in the CTA, footer, or first comment (e.g., "15 system design questions", "91 React questions") must be verified against the live GFE page, not just research notes. Research notes can go stale between when you gathered them and when the brief is finalized. Check the actual URL you're linking to and confirm the number matches what's on the page.
+7b. **First comment check.** Re-read the planned first comment. Does it lead with value (insight, question, bonus stat) or with a source list? If it leads with sources, rewrite it. Apply the same standard as slide content — the first comment is content, not a footnote.
+
+8. **Verify every number in the brief.** Any specific number — product counts, percentages, version numbers, benchmark figures — must be double-checked against its source before the brief is finalized. This applies everywhere: slides, captions, CTAs, footer zones, and first comments. If the number came from research notes, go back to the original source and re-verify. If the source is no longer accessible or the number can't be confirmed, either drop the number or flag it with `[VERIFY]`. Numbers are the easiest thing to get wrong and the fastest way to lose credibility.
 
 9. **Insight freshness check.** Re-read each content section and ask: "Would an engineer with 3 years of experience already know this?" Flag any section where the answer is "yes" for the core point (not just the setup). For flagged sections, either:
    - Replace the common-knowledge point with the deeper insight from the research notes
@@ -311,28 +374,100 @@ Catch every factual error, tighten the writing, and pressure-test engagement pot
    - Cut the section and redistribute its space to sections with genuine insights
    Every section's core point must be something the reader is unlikely to already know, sourced from authoritative references — not generic best-practice advice repackaged.
 
-9. **Check content progression.** Read the content sections/slides in order. Do they build on each other, or could they be shuffled randomly without losing anything? If the order doesn't matter, restructure into one of these arcs:
+9b. **Common sense rejection test.** For every "tip," "pattern," "practice," or "rule" in the brief, apply this test:
+
+   > **"Could a senior engineer give this exact advice without reading the source material?"**
+
+   If yes, the tip is common sense — it was already in the audience's head before they saw the post. Cut it or replace it with something the source material actually reveals that contradicts, refines, or adds specificity to what people assume.
+
+   **What passes:** A specific finding, workflow, config, metric, or pattern that the audience could NOT have guessed on their own. The insight must come FROM the research, not from general professional experience.
+
+   **Common sense patterns to REJECT (never include these):**
+   - "Always review AI-generated code" — everyone knows this
+   - "Ask why before accepting suggestions" — obvious advice
+   - "Write tests first" — standard practice, not a new insight
+   - "Break large tasks into smaller ones" — generic project management
+   - "Don't blindly trust AI output" — assumed knowledge for any professional
+   - "Use AI for boilerplate, write complex logic yourself" — every dev already does this
+   - "Provide more context in your prompts for better results" — basic prompting 101
+   - "Review the code before committing" — not a tip, it's a job requirement
+   - "Iterate on your prompts if the first result isn't right" — obvious
+   - "Be specific in your prompts" — generic advice, not actionable
+   - "Learn the fundamentals, don't just rely on AI" — platitude
+   - Anything that amounts to "be more careful" or "think before you act" — not a tip, it's a life philosophy
+
+   **Broader negative patterns (reject content that fits these shapes):**
+   - **Repackaged common sense with data:** "Study shows reviewing code is important" — the audience didn't need a study to know this. A study is only valuable if it reveals something that CONTRADICTS or REFINES what people assume.
+   - **Generic process advice with an AI wrapper:** "Plan before you code (but with AI)" — old advice wearing a new hat. Only include if the AI-specific version differs in a non-obvious way.
+   - **Vague principle without specific mechanism:** "AI works best when you stay engaged" — HOW? With what tool feature, prompt structure, or workflow step? If the tip could apply to any tool or situation, it's too vague.
+   - **"Tips" that are actually job descriptions:** "Senior engineers should review AI output for architectural issues" — that's literally what senior engineers do. Not a tip.
+   - **Moral advice disguised as technical advice:** "Don't let AI make you lazy" — not actionable, it's a lecture.
+
+9c. **Depth test.** For every framework, workflow, process, or multi-step practice described in the brief, apply this test:
+
+   > **"Could a developer change their behavior tomorrow based on what this slide says?"**
+
+   If the slide names a concept or lists steps but doesn't show what those steps look like in practice, it fails. The audience should leave with a concrete mental model of the work, not just a label for it.
+
+   **How to fix a slide that fails the depth test:**
+
+   1. **Show, don't label.** Replace abstract step names with a concrete example of what the step produces. "Write a spec" → show a 3-line example spec. "Review the PR" → show what a review checklist item looks like. "70% on problem definition" → show what problem definition output looks like (a requirements doc? a test file? a prompt?).
+   2. **Add the "what this actually looks like" layer.** Every process slide needs at least one concrete artifact: an example input, an example output, a code snippet, a screenshot description, or a specific tool command. If the slide can't include one, the research wasn't deep enough — go back to the source material.
+   3. **Use source material depth, not summary depth.** If the brief is summarizing a blog post, the brief should contain details that go BEYOND what a reader would get from the blog's headline and subheadings. Read deeper into the source — examples, case studies, caveats, specific numbers — and surface those details.
+
+   **What passes:**
+   - "The spec is a markdown file with 3 sections: Requirements (user stories), Constraints (tech stack, performance targets), and Test Cases (input → expected output). Here's an example for a search autocomplete..." — shows the artifact
+   - "Cursor Cloud Agents run in a sandboxed VM. The agent reads your .cursorrules file for project context, creates a branch, runs tests after each change, and only opens a PR when all tests pass. 30% of Cursor's own merged PRs are agent-generated." — shows the mechanism, not just the label
+
+   **What fails:**
+   - "Write a spec. Write tests. Let the agent execute. Review the output." — this is a table of contents, not content
+   - "The 70/30 rule: spend 70% on specs and verification, 30% on execution." — this is a ratio without substance. What does the 70% PRODUCE? What artifacts? What does "verification" mean concretely?
+   - "Human writes the spec and tests. Agent implements and verifies. Human reviews the PR." — restates the framework at the same abstraction level. The audience already got this from the hook.
+
+10. **Check content progression.** Read the content sections/slides in order. Do they build on each other, or could they be shuffled randomly without losing anything? If the order doesn't matter, restructure into one of these arcs:
    - Familiar → Surprising (what you know → what you're missing)
    - Easy → Hard (progressive difficulty)
    - Problem → Solution (pain point → fix)
    - Common → Overlooked (obvious stuff → hidden factors that actually matter)
 
-10. **Check for concrete anchors.** Count the number of content sections/slides that contain at least one concrete example, code snippet, specific number, or contrast pattern. If fewer than 60% of sections have a concrete anchor, add them. Abstract-only sections are the #1 quality gap between our briefs and top performers.
+11. **Check for concrete anchors.** Count the number of content sections/slides that contain at least one concrete example, code snippet, specific number, or contrast pattern. If fewer than 60% of sections have a concrete anchor, add them. Abstract-only sections are the #1 quality gap between our briefs and top performers.
 
 **Writing pass:**
 
-11. **Cut filler words.** Remove "basically", "essentially", "actually" (unless genuinely needed for contrast), "really", "very", "just".
+12. **Cut filler words.** Remove "basically", "essentially", "actually" (unless genuinely needed for contrast), "really", "very", "just".
 
-12. **Activate passive voice.** "The DOM is updated by React" → "React updates the DOM."
+13. **Activate passive voice.** "The DOM is updated by React" → "React updates the DOM."
 
-13. **Check jargon calibration.** The audience is engineers - don't over-explain basics. But don't assume familiarity with niche tools without context.
+14. **Check jargon calibration.** The audience is engineers - don't over-explain basics. But don't assume familiarity with niche tools without context.
 
-14. **Tone check.** Re-read the caption and slide headlines out loud. Do they sound like something you'd post on Reddit, or something a corporate social media manager wrote? Specific red flags:
+15. **Tone check.** Re-read the caption and slide headlines out loud. Do they sound like something you'd post on Reddit, or something a corporate social media manager wrote? Specific red flags:
     - Inspirational closers ("keep learning!", "you've got this!")
     - AI-speak ("it's worth noting", "let's delve", "comprehensive guide")
     - LinkedIn cringe ("thought leaders", "level up", "let's explore")
     - Over-hedging ("it could be argued that", "one might consider")
     If any section fails the vibe check, rewrite it blunter and more direct.
+
+**Visual & copy optimization pass:**
+
+16. **Visual designer + copywriter review.** Before the brief moves to final output, a visual designer and copywriter review each content slide/section to optimize how the information is displayed. Their mandate:
+
+    a. **Copywriter: Tighten the copy.** Compress multi-sentence bullet points into scannable fragments. Preserve the specific data points, stats, and findings — cut the filler words and explanatory padding around them. Every slide should read in under 3 seconds.
+
+    b. **Visual designer: Optimize the layout for each slide's content type.** Not all content works as bullet lists. Consider:
+       - Would a comparison table, split-column layout, or diagram communicate this faster than bullets?
+       - Should a dense slide be split into two, or can a different visual format (infographic, callout boxes, stat cards) make it work as one?
+       - Does the visual hierarchy guide the eye to the most important element first?
+
+    c. **Both: Preserve the meaning.** The research-backed content (specific findings, data points, non-obvious insights) must survive the optimization. The goal is to change HOW the information is presented, not WHAT information is presented. If a stat or finding would be lost by tightening, flag it — don't silently cut it.
+
+    d. **Decide format per slide.** Each slide may benefit from a different visual treatment:
+       - Stat slide → large number with one-line context
+       - Comparison → side-by-side columns or table
+       - List → short fragments with icons, not paragraphs
+       - Case study → logo + key stat + one-line lesson
+       - Process → flow diagram, not bullet points
+
+    e. **Slide splitting/merging decisions.** The designer and copywriter together decide whether a dense slide should be split (more slides, each scannable) or restructured (same slide count, better layout). This is a design judgment call, not a formula.
 
 ### Output
 A polished, verified brief ready for review.
@@ -346,7 +481,10 @@ A polished, verified brief ready for review.
 - ❏ Content sections have a clear progression (not randomly orderable)
 - ❏ 60%+ of content sections have a concrete anchor (example, code, number, or contrast)
 - ❏ Every section's core point goes beyond common knowledge (insight freshness check passed)
+- ❏ Every tip/pattern/practice passes the common sense rejection test (senior engineer couldn't give this advice without reading the source)
+- ❏ Every framework/workflow/process described passes the depth test (developer could change behavior tomorrow)
 - ❏ Writing is tight — no filler
+- ❏ Visual & copy optimization pass completed (every slide scannable in under 3 seconds, layout matches content type)
 
 ---
 
@@ -368,6 +506,7 @@ Package the brief in its final format, ready for the marketing manager's review.
    - Replace curly/smart quotes (" " ' ') with straight quotes (" ')
    - Strip invisible Unicode characters: zero-width spaces (U+200B), zero-width joiners (U+200D), zero-width non-joiners (U+200C), byte order marks (U+FEFF), word joiners (U+2060), and soft hyphens (U+00AD)
    - Replace horizontal ellipsis (…) with three dots (...)
+   - Escape hashtag lines in captions: prefix each `#` with `\` (e.g., `\#ReactJS \#JavaScript`) to prevent ClickUp's markdown parser from interpreting them as headings. When a hashtag line renders as H1, it cascades — the CTA text line below also renders as a heading. Also verify that CTA lines have no heading markup (`##` prefix) after writing.
 
    Run this as a text replacement pass on the full brief content string before passing it to `clickup_update_document_page`. The local backup in `briefs/drafts/` is NOT cleaned - keep the original there for diff visibility.
 4. **Write brief to ClickUp Doc.** Create a ClickUp Doc in the "2026 Calender" list (ID: `901814889385`) using `clickup_create_document`. Write the brief content into it using `clickup_create_document_page`. Then set the parent task's "ClickUp Brief" custom field (field ID: `68e015f7-6830-44ea-ab09-6280bdd0d00e`) to the ClickUp Doc URL using `clickup_update_task`. (Skip if this was a manual run without a ClickUp task.)
@@ -424,6 +563,7 @@ After the marketing manager reviews:
 | Unsure about a technical detail | Mark with `[VERIFY]` and include what you *think* is correct plus why you're uncertain. Never silently guess. |
 | Topic is too niche for broad engagement | Flag the concern with estimated engagement potential. Suggest ways to broaden the hook while keeping the content specific. |
 | Conflicting information across sources | Note the conflict, cite both sources, and recommend which to trust based on authority and recency. |
+| Source says X about a specific operation but brief claims X about the entire system | Narrow the claim to match the source's actual scope. A blog post about WebGL alpha blending ≠ "the entire editor uses WebGL." Find additional sources before making architectural claims. |
 
 ---
 

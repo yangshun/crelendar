@@ -10,7 +10,7 @@
 - **Format:** Carousel
 - **Format rationale:** Step-by-step progressive walkthrough with code snippets at each level requires multiple slides. 5 levels + hook + CTA = 8-9 slides, ideal carousel range. Prior interview post (System Design Interviewers) was a single image — carousel maintains format variety. Uber Interview Question (similar format, carousel) is our closest comparable top performer.
 - **Key angle:** The star rating question isn't a "beginner" question — it's a calibration tool. Interviewers use one question to find 5 different skill ceilings, and most candidates plateau at level 2.
-- **GFE tie-in:** CTA slide + caption link — star rating is an actual GFE question. Link to React interview questions page (91 questions).
+- **GFE tie-in:** CTA slide + caption link — star rating is an actual GFE question. Link to React interview questions page.
 - **Design inspiration:** NeetCode / Codemia explainer style — dark bg, numbered levels, code blocks per slide
 - **Color theme:** Dark (navy/black bg)
 - **Accent color:** React blue (#61dafb) for levels 1-3, gold/amber for levels 4-5 (the differentiator levels)
@@ -31,7 +31,7 @@ Which level would you reach in a timed interview? Be honest.
 
 #ReactJS #FrontEndInterview #MachineCoding #CodingInterview #FrontEndDevelopment #GreatFrontEnd #WebDevelopment #InterviewPrep
 
-Practice this exact question + 90 more React interview questions with solutions: https://www.greatfrontend.com/questions/react-interview-questions?utm_source=linkedin&utm_medium=social&utm_campaign=react-machine-coding_mar+2026
+Practice this exact question + more React interview questions with detailed solutions: https://www.greatfrontend.com/questions/react-interview-questions?utm_source=linkedin&utm_medium=social&utm_campaign=react-machine-coding_mar+2026
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -99,13 +99,20 @@ Practice this exact question + 90 more React interview questions with solutions:
 - Key elements: Visual showing hover vs committed state (e.g., 3 stars filled from click, 4 stars highlighted from hover). Code snippet. ❌ bug callout box.
 - Style notes: Warning box for the bug in orange/amber. Hover state stars shown in a lighter shade vs committed state.
 
-## Slide 5 — Level 3: Edge Cases
+## Slide 5a — Level 3: Edge Cases (Concepts)
 **Headline:** Level 3: Edge Cases (The Detail Test)
 - The requirements most candidates miss:
-  - **Reset on double-click:** Clicking the same star twice should clear the rating to 0. Tests if you handle the toggle case, not just the set case.
-  - **Configurable max stars:** Don't hard-code 5. Accept `maxStars` as a prop.
-  - **Multiple instances:** Use a unique key/id per instance — no global state leaks.
-  - **Read-only mode:** A `disabled` prop that prevents interaction but still displays the rating.
+  - **Reset on double-click:** Click the same star twice → clears to 0
+  - **Configurable max stars:** Accept `maxStars` as a prop, don't hard-code 5
+  - **Read-only mode:** A `disabled` prop that blocks interaction but still displays
+- 💡 Interviewers often add these mid-interview to test adaptability
+**Visual direction:**
+- Layout: "Level 3" badge top-left. Headline. 3 edge cases as a compact checklist with icons. Pro tip callout at bottom.
+- Key elements: Checklist with ✓/✗ marks. "💡 Pro tip" callout.
+- Style notes: Clean, text-only slide. No code block — that's on the next slide.
+
+## Slide 5b — Level 3: Edge Cases (Code)
+**Headline:** Level 3: The Code
 - Code anchor:
   ```jsx
   // Reset logic
@@ -117,20 +124,27 @@ Practice this exact question + 90 more React interview questions with solutions:
   {Array.from({ length: maxStars }, (_, i) => i + 1)
     .map((star) => ...)}
   ```
-- 💡 Interviewers often add these mid-interview to test adaptability
 **Visual direction:**
-- Layout: "Level 3" badge top-left. Headline. 4 edge cases as a compact checklist with icons. Code snippet showing reset + configurable patterns.
-- Key elements: Checklist with ✓/✗ marks. Code block. "💡 Pro tip" callout.
-- Style notes: Checklist items compact. Code block smaller than previous slides to fit alongside the list.
+- Layout: "Level 3" badge top-left (same as 5a). Code block centered, dominant element.
+- Key elements: Code snippet with syntax highlighting. Minimal surrounding text.
+- Style notes: Let the code breathe. Same styling as slides 3-4 code blocks.
 
-## Slide 6 — Level 4: Accessibility (The Senior-Level Differentiator)
+## Slide 6a — Level 4: Accessibility (The Senior-Level Differentiator)
 **Headline:** Level 4: Accessibility ⚠️ This Is Where Senior Hires Separate
-- The insight most candidates miss: Browsers provide **ZERO** keyboard support for custom ARIA widgets. You must implement everything from scratch.
+- The insight most candidates miss: Browsers provide **ZERO** keyboard support for custom ARIA widgets. You build it all from scratch.
 - What senior candidates do unprompted:
-  - Wrap stars in `role="radiogroup"` with `aria-label="Rating"`
-  - Each star gets `role="radio"` + `aria-checked={star === rating}`
-  - Keyboard navigation: ←/→ arrow keys to move, Enter/Space to select
+  - `role="radiogroup"` + `role="radio"` with `aria-checked`
+  - ←/→ arrow keys to move, Enter/Space to select
   - Visible focus indicator (outline) — not just `:hover`
+- ❌ Most candidates: Never mention accessibility unless asked
+- ✅ Senior signal: Bring it up before the interviewer does
+**Visual direction:**
+- Layout: "Level 4" badge top-left with **gold/amber bg** (color shift from React blue to signal "this is the differentiator"). ⚠️ badge on headline. ❌/✅ contrast at bottom.
+- Key elements: ⚠️ badge. 3 compact bullet points. ❌/✅ contrast pair. No code block — that's on the next slide.
+- Style notes: **Gold/amber accent** on this slide and the next. Bolder border.
+
+## Slide 6b — Level 4: Accessibility (Code)
+**Headline:** Level 4: The Code
 - Code anchor:
   ```jsx
   <div role="radiogroup" aria-label="Rating">
@@ -142,12 +156,10 @@ Practice this exact question + 90 more React interview questions with solutions:
       onKeyDown={handleKeyDown}
     >
   ```
-- ❌ Most candidates: Never mention accessibility unless asked
-- ✅ Senior signal: Bring up `role="radiogroup"` + keyboard nav before the interviewer does
 **Visual direction:**
-- Layout: "Level 4" badge top-left with **gold/amber bg** (color shift from React blue to signal "this is the differentiator"). ⚠️ badge on headline. Code block. ❌/✅ contrast at bottom.
-- Key elements: Code snippet with ARIA attributes highlighted. ⚠️ badge. ❌/✅ contrast pair.
-- Style notes: **Gold/amber accent** on this slide and the next (shift from React blue of slides 3-5) to visually signal "beyond most candidates." Bolder border.
+- Layout: "Level 4" badge top-left with gold/amber bg. Code block centered, dominant element.
+- Key elements: Code snippet with ARIA attributes highlighted. Minimal surrounding text.
+- Style notes: Gold/amber accent continues. Let the code breathe.
 
 ## Slide 7 — Level 5: The Meta-Game
 **Headline:** Level 5: What You SAY Matters as Much as What You CODE
@@ -183,14 +195,14 @@ Practice this exact question + 90 more React interview questions with solutions:
 
 ## Final Slide — CTA
 **Headline:** Ready to Ace the Interview?
-**GFE copy:** This star rating question — plus 90 more React coding challenges — with detailed solutions and in-browser practice.
+**GFE copy:** This star rating question — plus React coding challenges — with detailed solutions and in-browser practice.
 **CTA button text:** greatfrontend.com → React Interview Questions
 **Visual direction:**
 - Layout: Headline centered. GFE logo prominent. CTA text below with arrow/link icon.
 - Key elements: GFE logo, 5 filled gold stars as visual callback to the post theme.
 - Style notes: Clean, minimal. Consistent dark bg. GFE branding.
 
-**Target:** 9 slides (Hook + 7 content + CTA). Within the 7-10 ideal range.
+**Target:** 11 slides (Hook + 9 content + CTA). Slides 5 and 6 were each split into concept + code pairs to avoid overcrowding. Slightly above the 7-10 ideal range, but justified — each slide is now scannable at a glance.
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -206,4 +218,4 @@ Practice this exact question + 90 more React interview questions with solutions:
 - Reset-on-double-click and SVG constraint — https://frontendlead.com/coding-questions/star-rating-component-react
 - Machine coding round evaluation criteria — https://www.frontendinterviewhandbook.com/coding/build-front-end-user-interfaces
 
-**Planned first comment:** "Want to practice this exact question? GreatFrontEnd has the star rating question with test cases and a detailed solution — plus 90 more React coding challenges. All solvable in-browser: https://www.greatfrontend.com/questions/react-interview-questions"
+**Planned first comment:** "Want to practice this exact question? GreatFrontEnd has the star rating question with test cases and a detailed solution — plus more React coding challenges with solutions. All solvable in-browser: https://www.greatfrontend.com/questions/react-interview-questions"

@@ -40,6 +40,8 @@ Front-end engineers (junior → senior), front-end AI engineers, and full-stack 
 ├── reference/                 # Supporting research & source material
 │   ├── greatfrontend-info/    # Product facts, features, pricing, positioning
 │   ├── topic-research/        # Per-topic research notes (saved during Stage 1)
+│   ├── content-pillars/        # Per-pillar format guides (e.g., news-roundup.md)
+│   ├── covered-topics.md       # Dedup tracker for news/tools roundups
 │   └── top-posts-analysis.md  # Analysis of top-performing posts (patterns & insights)
 └── templates/                 # Brief templates and format specs
 ```
@@ -153,6 +155,7 @@ One flexible template for all formats. The brief focuses on **content and struct
 - **Date:** YYYY-MM-DD
 - **Topic:** [topic]
 - **Pillar:** [🔍 Deep Dive | ⚔️ Comparison | 🏗️ Tech Breakdown | 📰 News | 🗺️ Roadmap/List | 🎭 Culture | 💼 Career]
+  > For pillar-specific format guides, check `reference/content-pillars/`. Currently available: `news-roundup.md` (Biweekly News), `ai-coding-tips.md` (Ship with AI).
 - **Format:** [Carousel | Single Image | Animated GIF | Data Visualization | Meme | Text-Only]
 - **Format rationale:** [why this format and not another — required]
 - **Key angle:** [one sentence]
@@ -173,7 +176,7 @@ One flexible template for all formats. The brief focuses on **content and struct
 
 [Engagement prompt — a specific question that invites opinions. Not "What do you think?" but "Which one are you using in production?" or "Where are you on this roadmap?"]
 
-[5-9 hashtags — mix of broad (#JavaScript #WebDevelopment) and specific (#ECMAScript2025). Include #GreatFrontEnd when appropriate.]
+[5-9 hashtags — mix of broad (#JavaScript #WebDevelopment) and specific (#ECMAScript2025). Include #GreatFrontEnd when appropriate. **ClickUp doc version only:** prefix each hashtag with backslash (\#) to prevent ClickUp's markdown parser from rendering the hashtag line as a heading, which cascades to the CTA line below.]
 
 [GFE link with UTM: https://www.greatfrontend.com/?utm_source=linkedin&utm_medium=social&utm_campaign=TOPIC_MONTH+YEAR]
 
@@ -219,7 +222,7 @@ One flexible template for all formats. The brief focuses on **content and struct
 > - "Join 1M+ engineers who trust GreatFrontEnd"
 > - "Ready to Ace the Interview?"
 
-**Target:** 7-10 slides for full explainers. 5-6 for focused comparisons or tool roundups. Under 5 → consider single image instead.
+**Target:** 7-10 slides for full explainers and tiered news roundups. 5-6 for focused comparisons. Under 5 → consider single image instead.
 
 
 # ── Format B: Single Image (Static Infographic) ──
@@ -431,6 +434,15 @@ The audience is allergic to hard sells. GFE mentions must feel earned, not inser
 
 **Specifically for CTAs:** Any product count (number of questions, number of topics, etc.) referenced in the CTA, footer zone, or planned first comment must be verified against the live GFE page you're linking to. Don't rely on research notes alone - check the actual page. Numbers change as GFE adds/removes content.
 
+**Never hardcode GFE question counts.** Don't write "90+ React questions" or "15 system design questions" in CTAs, slides, or first comments. These numbers change as GFE adds content, and a stale number undermines trust. Instead write "React interview questions with detailed solutions" or "system design questions with solutions." The value prop is the quality and solutions, not the count.
+
+**GFE is an interview practice platform, not a course platform.** Never use "course," "courses," "curriculum," or "lessons" when describing GFE. Words like "learn," "study," and "prepare" are fine in interview prep context.
+
+**Use the correct messaging per GFE product:**
+- **Interview Prep** (Questions, System Design, Playbook — `/prepare`, `/system-design`, `/front-end-interview-guidebook`): Frame as interview practice. Use "practice," "prepare," "ace," "interview questions," "solutions by ex-interviewers."
+- **Projects** (`/projects`): Frame as skill building and portfolio. Use "build," "showcase," "portfolio-ready," "real-world projects," "professional designs," "community code reviews." Projects is NOT interview prep — it's about building skills and creating impressive portfolio pieces.
+- **Blog** (`/blog/*`): Frame as practical tips and real-world techniques. Can mention interview relevance as a secondary angle, not the primary framing.
+
 ---
 
 ## Rules for Repo Claude
@@ -445,8 +457,9 @@ The audience is allergic to hard sells. GFE mentions must feel earned, not inser
 8. **Optimize the hook** — the first slide/headline determines everything. Spend disproportionate effort here.
 9. **Keep briefs self-contained** — the content brief provides all text, data, and structure. Include light visual suggestions but leave design decisions to the design team.
 10. **Date-stamp everything** — front-end moves fast; "latest" is stale in 3 months.
-11. **Pull tasks from ClickUp** — check the "2026 Calender" list (ID: `901814889385`) in Space "GFE Content Marketing" for "write brief" subtasks. These are your assignments. **Prioritize by the parent task's due date (the post publish date), not the subtask's due date (the brief deadline).** Skip tasks whose parent publish date has already passed — those are handled separately.
+11. **Pull tasks from ClickUp** — check the "2026 Calender" list (ID: `901814889385`) in Space "GFE Content Marketing" for "write brief" subtasks. These are your assignments. **Prioritize by the parent task's due date (the post publish date), NOT the subtask's due date (the brief deadline).** This is the ONLY valid sort key — always fetch ALL open subtasks, retrieve each parent's due date, sort ascending, and pick the earliest. Never use subtask due date for ordering. Skip tasks whose parent publish date has already passed — those are handled separately.
 12. **Write output to a ClickUp Doc** — create a ClickUp Doc in the "2026 Calender" list, then set the parent task's "ClickUp Brief" custom field (field ID: `68e015f7-6830-44ea-ab09-6280bdd0d00e`) to the doc URL. Do NOT overwrite the "Brief link" field.
 13. **Close the subtask when done** — after writing the brief to a ClickUp Doc and saving a local backup, set the "write brief" subtask status to "subtask closed" in ClickUp.
 14. **Save a local backup** to `briefs/drafts/` following the naming convention (`YYYY-MM-DD-topic-slug.md`), in addition to writing to the ClickUp Doc.
 15. **Respect task description requirements - but verify them.** If the marketing manager added requirements in the parent task's description (specific angles, talking points, constraints, links), extract and sanity-check each one. Validated requirements are hard constraints the brief must satisfy. But if a requirement contains an inaccurate claim, conflicts with pipeline best practices, or doesn't fit the format/angle, flag it with `[MANAGER-CHECK]` and suggest an alternative rather than blindly following it. The manager is human too - catch mistakes before they make it into the brief.
+16. **Never repeat topics in news roundups or AI tips.** Before researching a Biweekly News or Ship with AI brief, check `reference/covered-topics.md` and the relevant pillar guide in `reference/content-pillars/` (`news-roundup.md` for Biweekly News, `ai-coding-tips.md` for Ship with AI). After completing one, update the tracker with all topics covered.
